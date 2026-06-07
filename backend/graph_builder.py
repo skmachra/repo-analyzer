@@ -2,7 +2,7 @@ import os
 
 from scanner import scan_repository
 from parser import extract_dependencies
-
+from metrics import get_file_metrics
 EXTENSIONS = [
     ".js",
     ".jsx",
@@ -29,9 +29,23 @@ def build_graph(repo_path):
 
         path_map[rel_path] = rel_path
 
+        full_path = os.path.join(
+            repo_path,
+            file["path"]
+        )
+
+        metrics = get_file_metrics(full_path)
+
         nodes.append({
-            "id": rel_path,
-            "label": file["name"]
+        "id": rel_path,
+        "data": {
+                "label": file["name"],
+                "path": rel_path,
+                "loc": metrics["loc"],
+                "functions": metrics["functions"],
+                "imports": metrics["imports"],
+                "size": metrics["size"]
+            }
         })
 
     for file in files:
