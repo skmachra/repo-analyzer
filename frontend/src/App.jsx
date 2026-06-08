@@ -1,11 +1,22 @@
+import { Routes, Route } from "react-router-dom";
+
+import Home from "./pages/Home";
 import GraphView from "./components/GraphView";
 
 function App() {
-  return (
-    <div className="w-screen h-screen">
-      <GraphView />
-    </div>
-  );
+    return (
+        <Routes>
+            <Route
+                path="/"
+                element={<Home />}
+            />
+
+            <Route
+                path="/graph"
+                element={<GraphView />}
+            />
+        </Routes>
+    );
 }
 
 export default App;

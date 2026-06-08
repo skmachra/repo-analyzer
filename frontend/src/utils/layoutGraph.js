@@ -1,18 +1,35 @@
 import dagre from "dagre";
 
-const nodeWidth = 220;
-const nodeHeight = 80;
+const nodeWidth = 180;
+const nodeHeight = 60;
 
 export function getLayoutedElements(nodes, edges) {
+    const connectedIds = new Set();
+
+    edges.forEach((edge) => {
+        connectedIds.add(edge.source);
+        connectedIds.add(edge.target);
+    });
+
+    const connectedNodes = nodes.filter((node) =>
+        connectedIds.has(node.id)
+    );
+
+    const isolatedNodes = nodes.filter(
+        (node) => !connectedIds.has(node.id)
+    );
+
     const dagreGraph = new dagre.graphlib.Graph();
 
     dagreGraph.setDefaultEdgeLabel(() => ({}));
 
     dagreGraph.setGraph({
-        rankdir: "LR",
+        rankdir: "TB",
+        ranksep: 80,
+        nodesep: 80,
     });
 
-    nodes.forEach((node) => {
+    connectedNodes.forEach((node) => {
         dagreGraph.setNode(node.id, {
             width: nodeWidth,
             height: nodeHeight,
@@ -20,20 +37,30 @@ export function getLayoutedElements(nodes, edges) {
     });
 
     edges.forEach((edge) => {
-        dagreGraph.setEdge(
-            edge.source,
-            edge.target
-        );
+        if (
+            connectedIds.has(edge.source) &&
+            connectedIds.has(edge.target)
+        ) {
+            dagreGraph.setEdge(
+                edge.source,
+                edge.target
+            );
+        }
     });
 
     dagre.layout(dagreGraph);
 
-    const layoutedNodes = nodes.map(
-        (node) => {
-            const pos =
-                dagreGraph.node(node.id);
+    const layoutedNodes = [];
 
-            return {
+    let maxY = 0;
+
+    connectedNodes.forEach((node) => {
+        const pos = dagreGraph.node(node.id);
+
+        if (pos) {
+            maxY = Math.max(maxY, pos.y);
+
+            layoutedNodes.push({
                 ...node,
                 position: {
                     x:
@@ -43,7 +70,28 @@ export function getLayoutedElements(nodes, edges) {
                         pos.y -
                         nodeHeight / 2,
                 },
-            };
+            });
+        }
+    });
+
+    const startY = maxY + 250;
+
+    isolatedNodes.forEach(
+        (node, index) => {
+            layoutedNodes.push({
+                ...node,
+                position: {
+                    x:
+                        (index % 8) *
+                        220,
+                    y:
+                        startY +
+                        Math.floor(
+                            index / 8
+                        ) *
+                            120,
+                },
+            });
         }
     );
 
