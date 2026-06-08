@@ -1,1 +1,20 @@
-{}
+{
+  "637ae88165210e6af7046a2d39dca14d91e51f04829d44ed2005265b9d975ca0": {
+    "summary": "This file defines the `User` data model for a MongoDB database using Mongoose. It specifies user attributes like name, email, password, and role, ensuring data validation such as unique emails and required fields. The key functions are `mongoose.Schema` to structure the user data and `mongoose.model` to create the actual database model for interaction."
+  },
+  "7946e3d58418dc4c3bfecee334e43483990685dc3b143f7879b60a822fea0a1f": {
+    "summary": "This file defines API routes for managing event resources using Express. It sets up endpoints to create, retrieve, update, and delete events, ensuring that sensitive actions are protected by authentication (`protect`) and require specific roles like \"ADMIN\" or \"PHOTOGRAPHER\" (`authorizeRoles`). Important functions involved are `createEvent`, `getEvents`, `getSingleEvent`, `updateEvent`, and `deleteEvent` which handle the core logic for each event operation."
+  },
+  "0b103753090cd7235e52912d037bf5744cfe979bc8b7d2075ca3f162794fb1a1": {
+    "summary": "This file initializes and configures a client for AWS Rekognition, which is Amazon's service for analyzing images and videos. It creates a `RekognitionClient` instance using specified region and security credentials from environment variables. Other parts of the application can then use this exported client to perform tasks like detecting objects, text, or faces within media."
+  },
+  "4f759049dd14b0e5dbb6ed42806fb60fe1c03ccee07a5c99aa92bc4dbe33444b": {
+    "summary": "This file sets up the API routes specifically for administrative functionalities in the application. It ensures secure access using `verifyJWT` and `verifyAdmin` middleware, and handles file uploads with `upload`. Key functions like `addQuestion`, `updateQuestion`, `getAllUsers`, and `manageTest` allow administrators to manage questions, users, tests, and access reports."
+  },
+  "b39eafd339e014f30b58a4e8cd6742003664710e5b8b3b13bfb5ae90bc5ee6f7": {
+    "summary": "This file manages all user-related operations, including registration, login, and managing user profiles. It handles both traditional email/password and Google authentication, using JWT tokens for secure session management. Key functions include `registerUser`, `loginUser`, `googleAuth`, `logoutUser`, `refreshAccessToken`, `addBookmark`, `removeBookmark`, `getBookmark`, and `getHistory` for user-specific data management."
+  },
+  "332e67fb89034497006b1bd1a0a56d6d08fca2886691540bc8f40c6d234906b0": {
+    "summary": "This React component visualizes user performance data using `react-chartjs-2`. It processes input data to display metrics like subject-wise performance, time spent per question, and difficulty-wise accuracy. The component utilizes `Bar`, `Line`, and `Pie` charts to render these insights, with `useEffect` handling proper chart lifecycle management."
+  }
+}

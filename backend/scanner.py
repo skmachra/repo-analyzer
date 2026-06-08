@@ -6,7 +6,8 @@ IGNORE_DIRS = {
     "dist",
     "build",
     "venv",
-    "__pycache__"
+    "__pycache__",
+    ".next",
 }
 
 
