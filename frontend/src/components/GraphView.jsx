@@ -1,14 +1,24 @@
 import { useEffect, useState } from "react";
-import ReactFlow, { Background, Controls, MiniMap } from "reactflow";
-
+import ReactFlow, {
+    Background,
+    Controls,
+    MiniMap,
+    useNodesState,
+    useEdgesState,
+} from "reactflow";
+import { getLayoutedElements } from "../utils/layoutGraph";
 import "reactflow/dist/style.css";
+
 import Sidebar from "./Sidebar";
 import api from "../services/api";
 
 function GraphView() {
-    const [nodes, setNodes] = useState([]);
-    const [edges, setEdges] = useState([]);
+    const [nodes, setNodes, onNodesChange] = useNodesState([]);
+    const [edges, setEdges, onEdgesChange] = useEdgesState([]);
+
     const [selectedFile, setSelectedFile] = useState(null);
+    const [summary, setSummary] = useState("");
+
     useEffect(() => {
         fetchGraph();
     }, []);
@@ -16,15 +26,15 @@ function GraphView() {
     const fetchGraph = async () => {
         try {
             const res = await api.post("/graph", {
-                repo_path: "C:\\Users\\admin\\Desktop\\P2P Web Share",
+                repo_path: "C:/Users/admin/Desktop/repo-analyzer/backend",
             });
 
-            const graphNodes = res.data.nodes.map((node, index) => ({
+            const graphNodes = res.data.nodes.map((node) => ({
                 id: node.id,
                 data: node.data,
                 position: {
-                    x: (index % 5) * 250,
-                    y: Math.floor(index / 5) * 150,
+                    x: 0,
+                    y: 0,
                 },
             }));
 
@@ -34,16 +44,19 @@ function GraphView() {
                 target: edge.target,
             }));
 
-            setNodes(graphNodes);
-            setEdges(graphEdges);
+            const layouted = getLayoutedElements(graphNodes, graphEdges);
+
+            setNodes(layouted.nodes);
+            setEdges(layouted.edges);
         } catch (err) {
-            console.log(err);
+            console.error(err);
         }
     };
+
     const handleNodeClick = async (event, node) => {
         try {
             const res = await api.post("/file", {
-                repo_path: "C:\\Users\\admin\\Desktop\\P2P Web Share",
+                repo_path: "C:/Users/admin/Desktop/repo-analyzer/backend",
                 file_path: node.data.path,
             });
 
@@ -51,30 +64,40 @@ function GraphView() {
                 ...node.data,
                 preview: res.data.preview,
             });
+
+            setSummary("Loading...");
+
+            // const summaryRes = await api.post("/summarize", {
+            //     repo_path: "C:/Users/admin/Desktop/repo-analyzer/backend",
+            //     file_path: node.data.path,
+            // });
+
+            // setSummary(summaryRes.data.summary);
         } catch (err) {
-            console.log(err);
+            console.error(err);
         }
     };
+
     return (
         <div
             style={{
                 display: "flex",
                 width: "100%",
-                height: "100vh"
+                height: "100vh",
             }}
         >
             <div
                 style={{
-                    flex: 1
+                    flex: 1,
                 }}
             >
                 <ReactFlow
                     nodes={nodes}
                     edges={edges}
+                    onNodesChange={onNodesChange}
+                    onEdgesChange={onEdgesChange}
+                    onNodeClick={handleNodeClick}
                     fitView
-                    onNodeClick={
-                        handleNodeClick
-                    }
                 >
                     <MiniMap />
                     <Controls />
@@ -84,9 +107,8 @@ function GraphView() {
 
             <Sidebar
                 file={selectedFile}
-                onClose={() =>
-                    setSelectedFile(null)
-                }
+                summary={summary}
+                onClose={() => setSelectedFile(null)}
             />
         </div>
     );
