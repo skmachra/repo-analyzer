@@ -1,6 +1,17 @@
 import os
 import re
 
+COMPLEXITY_KEYWORDS = [
+    "if ",
+    "elif ",
+    "else:",
+    "for ",
+    "while ",
+    "try:",
+    "except",
+    "match ",
+    "case ",
+]
 JS_FUNCTIONS = re.compile(
     r'function\s+\w+\s*\(|=>\s*{|const\s+\w+\s*=\s*\('
 )
@@ -16,7 +27,12 @@ JS_IMPORTS = re.compile(
 PY_IMPORTS = re.compile(
     r'import\s+|from\s+.*?\s+import'
 )
-
+CPP_FUNCTIONS = re.compile(
+    r'\w+\s+\w+\s*\([^;]*\)\s*\{'
+)
+CPP_INCLUDE = re.compile(
+    r'#include\s*[<"]([^>"]+)[>"]'
+)
 
 def get_file_metrics(file_path):
     try:
@@ -34,9 +50,12 @@ def get_file_metrics(file_path):
             line for line in lines
             if line.strip()
         ])
+        complexity = 0
 
+        for keyword in COMPLEXITY_KEYWORDS:
+            complexity += content.count(keyword)
         ext = file_path.split(".")[-1]
-
+    
         functions = 0
         imports = 0
 
@@ -47,6 +66,13 @@ def get_file_metrics(file_path):
 
             imports = len(
                 JS_IMPORTS.findall(content)
+            )
+        elif ext in ["cpp", "c", "h", "hpp"]:
+            functions = len(
+                CPP_FUNCTIONS.findall(content)
+            )
+            imports = len(
+                CPP_INCLUDE.findall(content)
             )
 
         elif ext == "py":
@@ -64,7 +90,8 @@ def get_file_metrics(file_path):
             "loc": loc,
             "functions": functions,
             "imports": imports,
-            "size": size
+            "size": size,
+            "complexity": complexity
         }
 
     except Exception:
@@ -72,5 +99,6 @@ def get_file_metrics(file_path):
             "loc": 0,
             "functions": 0,
             "imports": 0,
-            "size": 0
+            "size": 0,
+            "complexity": 0
         }

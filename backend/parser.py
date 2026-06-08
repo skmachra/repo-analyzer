@@ -15,6 +15,9 @@ PY_IMPORT = re.compile(
 PY_FROM_IMPORT = re.compile(
     r'from\s+([a-zA-Z0-9_\.]+)\s+import'
 )
+CPP_INCLUDE = re.compile(
+    r'#include\s*[<"]([^>"]+)[>"]'
+)
 
 
 def extract_dependencies(file_path):
@@ -38,6 +41,10 @@ def extract_dependencies(file_path):
         elif ext == "py":
             deps.extend(PY_IMPORT.findall(content))
             deps.extend(PY_FROM_IMPORT.findall(content))
+        elif ext in ["cpp", "c", "h", "hpp"]:
+            deps.extend(
+            CPP_INCLUDE.findall(content)
+        )
 
     except Exception:
         pass

@@ -2,14 +2,15 @@ from fastapi import FastAPI, HTTPException
 from pydantic import BaseModel
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
-
 from scanner import scan_repository
 from graph_builder import build_graph
 import os
 from metrics import get_file_metrics
+from ai_service import summarize_code
+from cache import (get_file_hash, get_cached_summary, save_summary, clear_cache)
 
 app = FastAPI()
-
+    
 app.add_middleware(
     CORSMiddleware,
     allow_origins=["*"],
@@ -21,6 +22,10 @@ class ScanRequest(BaseModel):
     repo_path: str
 
 class FileRequest(BaseModel):
+    repo_path: str
+    file_path: str
+
+class SummaryRequest(BaseModel):
     repo_path: str
     file_path: str
 
@@ -73,4 +78,67 @@ def get_file(data: FileRequest):
         "name": os.path.basename(full_path),
         "path": data.file_path,
         "preview": preview
+    }
+
+@app.post("/summarize")
+def summarize(
+    data: SummaryRequest
+):
+
+    full_path = os.path.join(
+        data.repo_path,
+        data.file_path
+    )
+
+    if not os.path.exists(full_path):
+        raise HTTPException(
+            status_code=404,
+            detail="File not found"
+        )
+
+    with open(
+        full_path,
+        "r",
+        encoding="utf-8",
+        errors="ignore"
+    ) as f:
+        code = f.read()
+
+    file_hash = get_file_hash(
+        code
+    )
+
+    cached = get_cached_summary(
+        file_hash
+    )
+
+    if cached:
+        return {
+            "summary":
+            cached["summary"],
+            "cached": True
+        }
+
+    summary = summarize_code(
+        code
+    )
+
+    save_summary(
+        file_hash,
+        summary
+    )
+
+    return {
+        "summary": summary,
+        "cached": False
+    }
+
+@app.delete("/cache")
+def remove_cache():
+
+    clear_cache()
+
+    return {
+        "message":
+        "Cache cleared"
     }
