@@ -135,6 +135,10 @@ function GraphView() {
             setSummary("Failed to generate summary.");
         }
     };
+    const closeSidebar = () => {
+        setSelectedFile(null);
+        setSummary("");
+    };
 
     return (
         <div className="h-screen bg-slate-950 text-white">
@@ -216,7 +220,7 @@ function GraphView() {
                 <Sidebar
                     file={selectedFile}
                     summary={summary}
-                    onClose={() => setSelectedFile(null)}
+                    onClose={closeSidebar}
                     onGenerateSummary={handleGenerateSummary}
                 />
             </div>
