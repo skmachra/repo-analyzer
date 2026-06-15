@@ -11,11 +11,12 @@ export default function Home() {
             return;
         }
 
-        navigate(
-            `/graph?path=${encodeURIComponent(
-                repoPath
-            )}`
-        );
+        navigate(`/graph?path=${encodeURIComponent(repoPath)}`);
+    };
+    const handlePathChange = (e) => {
+        const cleanedPath = e.target.value.replaceAll('"', "");
+
+        setRepoPath(cleanedPath);
     };
 
     return (
@@ -25,34 +26,24 @@ export default function Home() {
                 <div className="text-center">
                     <h1 className="text-5xl font-bold">
                         Repository Structure
-                        <span className="text-cyan-400">
-                            {" "}
-                            Analyzer
-                        </span>
+                        <span className="text-cyan-400"> Analyzer</span>
                     </h1>
 
                     <p className="mx-auto mt-4 max-w-3xl text-lg text-slate-400">
-                        Visualize repository architecture,
-                        dependency relationships, code metrics,
-                        and AI-powered file explanations.
+                        Visualize repository architecture, dependency relationships, code
+                        metrics, and AI-powered file explanations.
                     </p>
                 </div>
 
                 {/* Analyze Card */}
                 <div className="mx-auto mt-12 max-w-4xl rounded-2xl border border-slate-800 bg-slate-900 p-8 shadow-xl">
-                    <h2 className="mb-6 text-2xl font-semibold">
-                        Analyze Repository
-                    </h2>
+                    <h2 className="mb-6 text-2xl font-semibold">Analyze Repository</h2>
 
                     <div className="flex flex-col gap-4 md:flex-row">
                         <input
                             type="text"
                             value={repoPath}
-                            onChange={(e) =>
-                                setRepoPath(
-                                    e.target.value
-                                )
-                            }
+                            onChange={handlePathChange}
                             placeholder="C:/Projects/MyRepository"
                             className="flex-1 rounded-lg border border-slate-700 bg-slate-950 px-4 py-3 outline-none transition focus:border-cyan-500"
                         />
@@ -75,8 +66,7 @@ export default function Home() {
                     </div>
 
                     <p className="mt-3 text-sm text-slate-500">
-                        Enter the full path of a local
-                        repository to generate dependency
+                        Enter the full path of a local repository to generate dependency
                         graphs, metrics, and AI summaries.
                     </p>
                 </div>
@@ -89,8 +79,7 @@ export default function Home() {
                         </h3>
 
                         <p className="mt-2 text-sm text-slate-400">
-                            Visualize relationships between
-                            files and modules using React
+                            Visualize relationships between files and modules using React
                             Flow.
                         </p>
                     </div>
@@ -101,9 +90,8 @@ export default function Home() {
                         </h3>
 
                         <p className="mt-2 text-sm text-slate-400">
-                            Generate plain-English
-                            explanations for unfamiliar
-                            files using Gemini AI.
+                            Generate plain-English explanations for unfamiliar files using
+                            Gemini AI.
                         </p>
                     </div>
 
@@ -113,8 +101,7 @@ export default function Home() {
                         </h3>
 
                         <p className="mt-2 text-sm text-slate-400">
-                            Track LOC, imports, functions,
-                            complexity and file size.
+                            Track LOC, imports, functions, complexity and file size.
                         </p>
                     </div>
 
@@ -124,17 +111,14 @@ export default function Home() {
                         </h3>
 
                         <p className="mt-2 text-sm text-slate-400">
-                            Avoid repeated AI requests using
-                            content-based hashing.
+                            Avoid repeated AI requests using content-based hashing.
                         </p>
                     </div>
                 </div>
 
                 {/* Workflow */}
                 <div className="mt-16 rounded-2xl border border-slate-800 bg-slate-900 p-8">
-                    <h2 className="text-2xl font-semibold">
-                        How It Works
-                    </h2>
+                    <h2 className="text-2xl font-semibold">How It Works</h2>
 
                     <div className="mt-8 grid gap-8 md:grid-cols-4">
                         <div>
@@ -142,14 +126,10 @@ export default function Home() {
                                 1
                             </div>
 
-                            <h3 className="font-medium">
-                                Select Repository
-                            </h3>
+                            <h3 className="font-medium">Select Repository</h3>
 
                             <p className="mt-2 text-sm text-slate-400">
-                                Enter the path of the
-                                repository you want to
-                                analyze.
+                                Enter the path of the repository you want to analyze.
                             </p>
                         </div>
 
@@ -158,13 +138,10 @@ export default function Home() {
                                 2
                             </div>
 
-                            <h3 className="font-medium">
-                                Build Graph
-                            </h3>
+                            <h3 className="font-medium">Build Graph</h3>
 
                             <p className="mt-2 text-sm text-slate-400">
-                                Parse imports and construct
-                                a dependency graph.
+                                Parse imports and construct a dependency graph.
                             </p>
                         </div>
 
@@ -173,13 +150,10 @@ export default function Home() {
                                 3
                             </div>
 
-                            <h3 className="font-medium">
-                                Analyze Metrics
-                            </h3>
+                            <h3 className="font-medium">Analyze Metrics</h3>
 
                             <p className="mt-2 text-sm text-slate-400">
-                                Calculate LOC, complexity,
-                                imports and file size.
+                                Calculate LOC, complexity, imports and file size.
                             </p>
                         </div>
 
@@ -188,14 +162,10 @@ export default function Home() {
                                 4
                             </div>
 
-                            <h3 className="font-medium">
-                                Explore
-                            </h3>
+                            <h3 className="font-medium">Explore</h3>
 
                             <p className="mt-2 text-sm text-slate-400">
-                                Click nodes to view file
-                                details and AI-generated
-                                explanations.
+                                Click nodes to view file details and AI-generated explanations.
                             </p>
                         </div>
                     </div>
