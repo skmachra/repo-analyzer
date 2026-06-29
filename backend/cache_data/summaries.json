@@ -16,5 +16,26 @@
   },
   "332e67fb89034497006b1bd1a0a56d6d08fca2886691540bc8f40c6d234906b0": {
     "summary": "This React component visualizes user performance data using `react-chartjs-2`. It processes input data to display metrics like subject-wise performance, time spent per question, and difficulty-wise accuracy. The component utilizes `Bar`, `Line`, and `Pie` charts to render these insights, with `useEffect` handling proper chart lifecycle management."
+  },
+  "ac4e3963038e9b7950ecc339a31b4e81f217f0cf9dde3997f2a6cb213df30155": {
+    "summary": "This file defines an `adminMiddleware` function, designed to restrict access to specific routes in a web application. Its purpose is to ensure that only authenticated users with an \"admin\" role can proceed. The middleware checks the user's role and either allows the request to continue or sends a \"forbidden\" error."
+  },
+  "bf3c7d24805c90b668fe5a0f65570f6f75250403db6acd4613dde14e959e5ff4": {
+    "summary": "This file defines a single function, `getSLADeadline`, which calculates a Service Level Agreement (SLA) deadline. It takes a service `category` (like \"Pothole\" or \"Garbage\") and adds a specific time duration (e.g., 24 hours, 7 days) to the current date. The function then returns a new `Date` object representing that calculated deadline."
+  },
+  "41b1d67b29e32707117587c8d9383262284eb72a0365a8a9daca8f7304a0de00": {
+    "summary": "This file manages reports, providing ways to fetch and update them. The `getAllReports` function retrieves a list of reports, allowing filtering by category or status and showing who created each. The `updateReportStatus` function updates a specific report's status, ward, and visibility, while also logging these changes with a new update record."
+  },
+  "2b7040ca77db85e47b102aeee3aec38218edbb090d75e2a0dfb23626760a8c8d": {
+    "summary": "This file constructs a dependency graph for a given code repository. Its main function, `build_graph`, scans all files, gathers metrics like lines of code, and identifies dependencies between them using external `scan_repository`, `extract_dependencies`, and `get_file_metrics` functions. The output is a graph representing files as nodes and their import/include relationships as edges, supporting various languages."
+  },
+  "64e623b568485566604440a610f0523cc34eaa89755e54a516c6894725140366": {
+    "summary": "This file creates a FastAPI web service designed to help developers understand codebases. It provides API endpoints to scan repositories for files, build code dependency graphs, fetch file content, and use AI to summarize code with caching. Important functions include `scan_repo` (for scanning files), `graph` (for building dependency graphs), `get_file` (for viewing file content), and `summarize` (for AI-powered code summaries)."
+  },
+  "03d89e5f494a3937ab97379065f7092edfc38a4d7a3fae1c64aa1a344f130159": {
+    "summary": "This file is the main entry point for the backend API, setting up an Express server. It connects to the database via `connectDB()`, starts a scheduled `startEscalationJob()`, and configures middleware like CORS and JSON parsing. It then defines API routes for authentication, reports, and administration before starting the server to listen for requests."
+  },
+  "8489158aeaf69a242a592d50ddce83f7ad11acabfcbe785c9313002695b328d6": {
+    "summary": "This file defines a Mongoose schema for `ReportUpdate` objects. Its purpose is to structure how updates for a specific report are stored in a MongoDB database, including status changes, notes, proof images, and who made the update. It utilizes `mongoose.Schema` to define the data fields and `mongoose.model` to create the database model for these updates."
   }
 }

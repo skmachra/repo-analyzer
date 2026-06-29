@@ -1,18 +1,12 @@
 import { useEffect, useState, useCallback } from "react";
 import { useSearchParams, Link } from "react-router-dom";
 
-import ReactFlow, {
-    Background,
-    Controls,
-    MiniMap,
-    useNodesState,
-    useEdgesState,
-    useReactFlow,
-} from "reactflow";
+import ReactFlow, { Background, Controls, MiniMap, useNodesState, useEdgesState, } from "reactflow";
 
 import "reactflow/dist/style.css";
 
 import Sidebar from "./Sidebar";
+import SearchBar from "./SearchBar";
 import api from "../services/api";
 import { getLayoutedElements } from "../utils/layoutGraph";
 
@@ -30,6 +24,8 @@ function GraphView() {
     const [selectedFile, setSelectedFile] = useState(null);
 
     const [summary, setSummary] = useState("");
+
+    const [reactFlowInstance, setReactFlowInstance] = useState(null);
 
     const [loading, setLoading] = useState(true);
 
@@ -99,10 +95,11 @@ function GraphView() {
     }, [repoPath, setNodes, setEdges]);
 
     useEffect(() => {
+        // eslint-disable-next-line react-hooks/set-state-in-effect
         fetchGraph();
     }, [fetchGraph]);
 
-    const handleNodeClick = async (event, node) => {
+    const openFileDetails = async (node) => {
         try {
             const fileRes = await api.post("/file", {
                 repo_path: repoPath,
@@ -117,12 +114,32 @@ function GraphView() {
             console.error(err);
         }
     };
+
+    const handleNodeClick = async (event, node) => {
+        openFileDetails(node);
+    };
+
+    const handleSearchSelect = (node) => {
+        openFileDetails(node);
+
+        if (!reactFlowInstance) return;
+
+        reactFlowInstance.setCenter(
+            node.position.x + 100,
+            node.position.y + 30,
+            {
+                duration: 700,
+                zoom: 1.2,
+            },
+        );
+    };
+
     const handleGenerateSummary = async () => {
         if (!selectedFile) return;
 
         try {
             setSummary("Generating summary...");
-
+            
             const summaryRes = await api.post("/summarize", {
                 repo_path: repoPath,
                 file_path: selectedFile.path,
@@ -144,13 +161,18 @@ function GraphView() {
         <div className="h-screen bg-slate-950 text-white">
             {/* Top Bar */}
             <div className="flex h-16 items-center justify-between border-b border-slate-800 bg-slate-900 px-6">
-                <div>
+                <div className="min-w-0">
                     <h1 className="text-xl font-bold">{repoName}</h1>
 
                     <p className="text-sm text-slate-400">Repository Analysis</p>
                 </div>
 
-                <div className="flex gap-3">
+                <div className="flex flex-1 items-center justify-end gap-3">
+                    <SearchBar
+                        nodes={nodes}
+                        onSelect={handleSearchSelect}
+                    />
+
                     <button
                         onClick={fetchGraph}
                         className="rounded-lg bg-cyan-500 px-4 py-2 font-medium text-black transition hover:bg-cyan-400"
@@ -188,6 +210,7 @@ function GraphView() {
                             onNodesChange={onNodesChange}
                             onEdgesChange={onEdgesChange}
                             onNodeClick={handleNodeClick}
+                            onInit={setReactFlowInstance}
                             fitView
                             minZoom={0.5}
                         >
